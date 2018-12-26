@@ -1,6 +1,6 @@
 import * as checkInClient from '../../axiosClients/checkInClient/checkInClient';
 import { ICheckIn } from '../../model/CheckIn.model';
-import { getTodayStart, getTodayEnd } from 'src/include/utcUtil';
+import { getTodayEnd } from 'src/include/utcUtil';
 import { toast } from 'react-toastify';
 import { sortCheckInByDate } from '../manager/manager.helpers';
 
@@ -11,10 +11,26 @@ export const associateTypes = {
 }
 
 /**
- * Get associate checkins
+ * Initiate associate resources
  */
 export const associateInit = (userId: number) => (dispatch) => {  
-  checkInClient.getCheckInByUserId(userId, getTodayStart(), getTodayEnd())
+  getAssociateCheckIns(userId)(dispatch);
+}
+
+/**
+ * Get a list of associate check ins
+ * @param userId 
+ * @param fromDate 
+ * @param toDate 
+ */
+export const getAssociateCheckIns = (userId: number, fromDate?: number, toDate?: number) => dispatch => {
+  if(fromDate == null) {
+    fromDate = 0;
+  }
+  if(toDate == null) {
+    toDate = getTodayEnd();
+  }
+  checkInClient.getCheckInByUserId(userId, fromDate, toDate)
   .then(response => {
     const checkInList = response.data.models.map(checkIn => {
       return checkIn as ICheckIn;
@@ -36,15 +52,15 @@ export const associateInit = (userId: number) => (dispatch) => {
  * Associate submit a new check in
  * @param description 
  */
-export const submitCheckIn = (description: string, userId: number) => {
+export const submitCheckIn = (description: string, userId: number) => dispatch => {
   const body = {
     "checkinDescription": description,
     "userId": userId
   }
   checkInClient.postCheckIn(body)
   .then(response => {
-    console.log("success: " + JSON.stringify(response.data));
     toast.success("Check in submitted")
+    getAssociateCheckIns(userId)(dispatch);
   })
   .catch(error => {
     toast.warn("Unable to submit check in")    
