@@ -41,7 +41,7 @@ export const cognitoLogin = (username: string, password: string, history: Histor
 export const register = (user: IUserCreateDto) => (dispatch) => {
   userClient.postUser(user)
   .then(response => {
-    console.log("error");
+    toast.success("User registered");
   })
   .catch(error => {
     toast.warn("Server unable to register user")      
@@ -52,9 +52,8 @@ export const register = (user: IUserCreateDto) => (dispatch) => {
  * Set up user data
  */
 export const setup = () => dispatch => {
-  // Get user info from server if session is valid
   if(userHelpers.refreshCognitoSession()(dispatch)) {
-    userHelpers.initUser(dispatch);
+    userHelpers.initUser()(dispatch);
   }
 }
 
@@ -65,8 +64,8 @@ export const setup = () => dispatch => {
 export const updateUser = (user) => (dispatch) => {
   userClient.patchUser(user)
   .then(response => {
-    console.log(response)
     toast.success("Info updated")
+    userHelpers.initUser()(dispatch);
   })
   .catch(error => {
     toast.warn("Server error")

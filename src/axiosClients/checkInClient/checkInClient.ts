@@ -8,7 +8,7 @@ export const getManagerCheckIn = (fromDate: number, toDate: number) => {
   return axiosClient.get(`/checkins/range`, {params});
 }
 
-export const getCheckInByUserId = (userId: number, fromDate: number, toDate: number) => {
+export const getCheckInByUserId = (userId: number, fromDate?: number, toDate?: number) => {
   const params = {
     fromDate,
     toDate

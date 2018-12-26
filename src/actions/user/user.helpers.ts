@@ -13,12 +13,9 @@ import { managerTypes } from '../manager/manager.actions';
 /**
  * Get current login user info from the server
  */
-export const initUser = (dispatch) => {
-  isLoading(true)(dispatch); 
-  
+export const initUser = () => (dispatch) => {  
   userClient.getUserFromCognitoJwt()
   .then(response => {
-    console.log(response)
     dispatch({
       payload: {
         user:  response.data as IUser
@@ -29,8 +26,6 @@ export const initUser = (dispatch) => {
   .catch(error => {
     console.log(error)
   })
-  
-  isLoading(false)(dispatch); 
 
   // Reset token once every 50 minutes
   window.setInterval(
@@ -38,8 +33,13 @@ export const initUser = (dispatch) => {
   , 3000000);
 }
 
+/**
+ * Log the user in with cognito
+ * @param username 
+ * @param password 
+ * @param history 
+ */
 export const cognitoLogin = (username: string, password: string, history: History) => (dispatch) => {
-  isLoading(true)(dispatch);  
   const authenticationData = {
     Password: password,
     Username: username,
@@ -91,7 +91,7 @@ export const cognitoLogin = (username: string, password: string, history: Histor
 
       history.push("/dashboard/check-ins");
 
-      initUser(dispatch)
+      initUser()(dispatch);
 
       // Reset token once every 50 minutes
       window.setInterval(
@@ -99,7 +99,6 @@ export const cognitoLogin = (username: string, password: string, history: Histor
       , 3000000);
       }
   });
-  isLoading(true)(dispatch);
 }
 
 /**
@@ -136,6 +135,7 @@ export const refreshCognitoSession = () => (dispatch) => {
 
         // Put jwt into axios client
         axiosClient.addCognitoToHeader(session.getIdToken().getJwtToken());
+        console.log(session.getIdToken().getJwtToken())
         const refreshToken = session.getRefreshToken();
         const awsCreds: any = AWS.config.credentials;
 
