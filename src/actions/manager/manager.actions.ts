@@ -167,11 +167,24 @@ export const managerPostCohort = (cohortName: string, cohortDescription: string,
     })
 }
 
-export const managerPostUserToCohort = (cohortId: number, email: string) => dispatch => {
+/**
+ * Adding a new/existing email to a cohort with optional first name and last name
+ * @param cohortId 
+ * @param email 
+ * @param firstName 
+ * @param lastName 
+ */
+export const managerPostUserToCohort = (cohortId: number, email: string, firstName?: string, lastName?: string) => dispatch => {
+  if(firstName == null) {
+    firstName = "first name";
+  }
+  if(lastName == null) {
+    lastName = "last name";
+  }
   const user = {
-    "email": email,
-    "firstName": "first name",
-    "lastName": "last name"
+    email,
+    firstName,
+    lastName
   }
   cohortClient.postUser(user)
   .then(response => {
@@ -194,7 +207,12 @@ export const managerPostUserToCohort = (cohortId: number, email: string) => disp
   })
 }
 
-export const addCognitoGroup = (email: string, role: string) => dispatch => {
+/**
+ * Add an existing email to a cognito group
+ * @param email 
+ * @param role 
+ */
+export const addToCognitoGroup = (email: string, role: string) => dispatch => {
   blakeClient.addUserGroup(email, role)
   .then(response => {
     toast.success("User is added to group")
@@ -202,13 +220,21 @@ export const addCognitoGroup = (email: string, role: string) => dispatch => {
   .catch(console.log)
 }
 
-export const deleteCognitoGroup = (email: string, role: string) => dispatch => {
+/**
+ * Delete an email from a cognito group
+ * @param email 
+ * @param role 
+ */
+export const deleteFromCognitoGroup = (email: string, role: string) => dispatch => {
   blakeClient.deleteUserGroup(email, role)
   .then(response => {
     toast.success("User is removed from group")
   })
 }
 
+/**
+ * Get all users
+ */
 export const getAllUsers = () => dispatch => {
   userClient.getAllUsers()
   .then(response => {

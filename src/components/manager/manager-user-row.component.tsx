@@ -1,26 +1,25 @@
 import * as React from 'react';
-import {Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import * as managerActions from '../../actions/manager/manager.actions';
 import { connect } from 'react-redux';
 import { IState } from 'src/reducers';
+
 interface IComponentState {
    cChecked: any,
-   
-
 }
 interface IProps {
    Data: any,
    roleSelected: string,
-   deleteCognitoGroup: (email: string, role: string) => void
- }
+   deleteFromCognitoGroup: (email: string, role: string) => void
+}
 
-export class ManagerUserRowComponent extends React.Component <IProps, IComponentState > {
-   constructor(props){
+export class ManagerUserRowComponent extends React.Component<IProps, IComponentState> {
+   constructor(props) {
       super(props);
 
       this.state = {
          cChecked: true,
-        
+
       }
    }
 
@@ -29,17 +28,17 @@ export class ManagerUserRowComponent extends React.Component <IProps, IComponent
       const value = target.type === 'checkbox' ? target.checked : target.value;
       this.setState({
          ...this.state,
-         cChecked: value  
-       });
-       
+         cChecked: value
+      });
+
    }
-   public removeRoleBtn = () =>{
-       this.props.deleteCognitoGroup(this.props.Data.email, this.props.roleSelected);
+   public removeRoleBtn = () => {
+      this.props.deleteFromCognitoGroup(this.props.Data.email, this.props.roleSelected);
    }
 
    public render() {
 
-      return(
+      return (
          <>
             <tr >
                <td>{this.props.Data.firstName}</td>
@@ -47,9 +46,9 @@ export class ManagerUserRowComponent extends React.Component <IProps, IComponent
                <td>{this.props.Data.email}</td>
                <td>
                   <Button className="mt-1 ml-1" size="sm" color="danger"
-                  onClick={this.removeRoleBtn}> Remove </Button>
+                     onClick={this.removeRoleBtn}> Remove </Button>
                </td>
-               <td className="flex-center"> 
+               <td className="flex-center">
                   <div className="flex-center">
                      <label className="switch">
                         <input type="checkbox"

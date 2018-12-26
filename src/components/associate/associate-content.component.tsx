@@ -28,10 +28,6 @@ export class AssociateContentComponent extends React.Component< IComponentProps,
 		}
 	}
 
-	public componentDidMount() {
-		//
-	}
-
 	public handleCheckInClick = () => {
 		this.setState({ isCheckingIn: true });
 	}
@@ -91,7 +87,6 @@ export class AssociateContentComponent extends React.Component< IComponentProps,
 		if(this.props.user && !this.state.isInit) {
 			this.initAssociate();
 		}
-		
 
 		return (
 			

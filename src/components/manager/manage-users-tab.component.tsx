@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Table} from 'reactstrap';
+import { Table } from 'reactstrap';
 import ManagerUserRowComponent from '../manager/manager-user-row.component'
 import ManagerUserRowAdminComponent from '../manager/manger-user-row-admin.component';
 import { connect } from 'react-redux';
 import { IState } from 'src/reducers';
-import {Button, FormGroup, Input, Label, Col, Row} from 'reactstrap';
+import { Button, FormGroup, Input, Label, Col, Row } from 'reactstrap';
 import * as managerActions from '../../actions/manager/manager.actions';
 
 
@@ -23,17 +23,17 @@ interface IComponentProps {
    trainers: any[]
    stagings: any[]
    associates: any[]
-   addCognitoGroup: (email: string, role: string) => void
-   removeCognitoGroup: (email: string, role: string) => void
-   
+   addToCognitoGroup: (email: string, role: string) => void
+   deleteFromCognitoGroup: (email: string, role: string) => void
+
 }
 
-export class ManageUsersTabComponenet extends React.Component <IComponentProps, IComponentState> {
-   
-   constructor(props){
+export class ManageUsersTabComponenet extends React.Component<IComponentProps, IComponentState> {
+
+   constructor(props) {
       super(props);
 
-      this.state={
+      this.state = {
          email: '',
          isCheckedAssociate: false,
          isCheckedStageMan: false,
@@ -44,40 +44,36 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
    }
 
    public handleSubmit = () => {
-      if(this.state.isCheckedStageMan){
-        this.props.addCognitoGroup(this.state.email, 'staging-manager');
-      } 
-      
-      if(this.state.isCheckedTrainer){
-         this.props.addCognitoGroup(this.state.email, 'trainer');
-      } 
+      if (this.state.isCheckedStageMan) {
+         this.props.addToCognitoGroup(this.state.email, 'staging-manager');
+      }
+
+      if (this.state.isCheckedTrainer) {
+         this.props.addToCognitoGroup(this.state.email, 'trainer');
+      }
    }
 
-   public handleTabClickAssoc = ()=>{
+   public handleTabClickAssoc = () => {
       this.setState({
          roleSelected: 'ASSOCIATE'
-         
-       });
+      });
    }
-   public handleTabClickAdmin = ()=>{
+   public handleTabClickAdmin = () => {
       this.setState({
-        
          roleSelected: 'ADMIN'
-         
-       });
+      });
    }
-   public handleTabClickStage = ()=>{
+   public handleTabClickStage = () => {
       this.setState({
          roleSelected: 'STAGING_MANAGER'
-       });
+      });
    }
-   public handleTabClickTrainer = ()=>{
+   public handleTabClickTrainer = () => {
       this.setState({
          roleSelected: 'TRAINER'
-         
-       });
+      });
    }
-   public handleRoleCheckboxAssoc = (e: any) =>{
+   public handleRoleCheckboxAssoc = (e: any) => {
       const target = e.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
 
@@ -92,7 +88,7 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
       })
    }
 
-   public handleRoleCheckboxTrain = (e: any) =>{
+   public handleRoleCheckboxTrain = (e: any) => {
       const target = e.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
 
@@ -100,7 +96,7 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
          isCheckedTrainer: value
       });
    }
-   public handleRoleCheckboxStageMan = (e: any) =>{
+   public handleRoleCheckboxStageMan = (e: any) => {
       const target = e.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
 
@@ -110,17 +106,17 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
    }
 
    public renderTableHead = () => {
-      
-      if(this.state.roleSelected === 'ADMIN'){
-         return(
-         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>User Email</th>
-         </tr>
+
+      if (this.state.roleSelected === 'ADMIN') {
+         return (
+            <tr>
+               <th>First Name</th>
+               <th>Last Name</th>
+               <th>User Email</th>
+            </tr>
          )
       } else {
-         return(
+         return (
             <tr>
                <th>First Name</th>
                <th>Last Name</th>
@@ -128,60 +124,60 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
                <th>Action</th>
                <th>Active/Inactive</th>
             </tr>
-            )
+         )
       }
    }
 
-   public renderTabTable = () =>{
-      
-      if(this.state.roleSelected ==='ADMIN'){
-         return <> {this.props.admins.map((Data, index) => <ManagerUserRowAdminComponent Data={Data} key={index}/>)} </>
-      }else if(this.state.roleSelected === 'ASSOCIATE') {
-         return <> {this.props.associates.map((Data, index) => <ManagerUserRowComponent  roleSelected={this.state.roleSelected} Data={Data} key={index}/>)} </>
-      }else if(this.state.roleSelected === 'STAGING_MANAGER') {
-         return <> {this.props.stagings.map((Data, index) => <ManagerUserRowComponent  roleSelected={this.state.roleSelected} Data={Data} key={index}/>)} </>
-      }else if(this.state.roleSelected === 'TRAINER') {
-         return <> {this.props.trainers.map((Data, index) => <ManagerUserRowComponent  roleSelected={this.state.roleSelected} Data={Data} key={index}/>)} </>
-      } else{
+   public renderTabTable = () => {
+
+      if (this.state.roleSelected === 'ADMIN') {
+         return <> {this.props.admins.map((Data, index) => <ManagerUserRowAdminComponent Data={Data} key={index} />)} </>
+      } else if (this.state.roleSelected === 'ASSOCIATE') {
+         return <> {this.props.associates.map((Data, index) => <ManagerUserRowComponent roleSelected={this.state.roleSelected} Data={Data} key={index} />)} </>
+      } else if (this.state.roleSelected === 'STAGING_MANAGER') {
+         return <> {this.props.stagings.map((Data, index) => <ManagerUserRowComponent roleSelected={this.state.roleSelected} Data={Data} key={index} />)} </>
+      } else if (this.state.roleSelected === 'TRAINER') {
+         return <> {this.props.trainers.map((Data, index) => <ManagerUserRowComponent roleSelected={this.state.roleSelected} Data={Data} key={index} />)} </>
+      } else {
          return (
             <></>
-         ) 
-      }  
+         )
+      }
    }
 
-   public render(){
-      const renderTableDiv =  this.renderTabTable();
-      const renderTableHeaderDiv =  this.renderTableHead();
+   public render() {
+      const renderTableDiv = this.renderTabTable();
+      const renderTableHeaderDiv = this.renderTableHead();
       return (
          <>
             <nav>
                <div className="nav nav-tabs manager-container mt-2" id="nav-tab" role="tablist">
                   <a className="nav-item nav-link active nav-t" id="nav-contact-tab" data-toggle="tab" href="#admin-role" role="tab" aria-controls="check-in" aria-selected="true" aria-hidden="false"
-                  onClick={this.handleTabClickAdmin}>Admin</a>
+                     onClick={this.handleTabClickAdmin}>Admin</a>
                   <a className="nav-item nav-link nav-t" id="nav-profile-tab" data-toggle="tab" href="#staging-man-role" role="tab" aria-controls="nav-profile" aria-selected="false"
-                   onClick={this.handleTabClickStage}>Staging Manager</a>
+                     onClick={this.handleTabClickStage}>Staging Manager</a>
                   <a className="nav-item nav-link nav-t" id="nav-manage-users-tab" data-toggle="tab" href="#traniner-role" role="tab" aria-controls="nav-manage-users" aria-selected="false"
-                   onClick={this.handleTabClickTrainer}>Trainer</a>
+                     onClick={this.handleTabClickTrainer}>Trainer</a>
                   <a className="nav-item nav-link nav-t" id="nav-manage-users-tab" data-toggle="tab" href="#associate-role" role="tab" aria-controls="nav-manage-users" aria-selected="false"
-                   onClick={this.handleTabClickAssoc}>Associate</a>
+                     onClick={this.handleTabClickAssoc}>Associate</a>
                </div>
             </nav>
-            <div className="modal"  id="add-user-modal"role="dialog">
+            <div className="modal" id="add-user-modal" role="dialog">
                <div className="modal-dialog" role="document">
                   <div className="modal-content">
                      <div className="modal-header">
-                     <h3 className="modal-title">Add Role to User</h3>
-                     <Button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </Button>
+                        <h3 className="modal-title">Add Role to User</h3>
+                        <Button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </Button>
                      </div>
                      <div className="modal-body">
                         <FormGroup>
                            <Row>
-                              <Col xs={2}> 
-                                 <Label > Email </Label> 
+                              <Col xs={2}>
+                                 <Label > Email </Label>
                               </Col>
-                              <Col xs={10}> 
+                              <Col xs={10}>
                                  <Input onChange={this.handleEmailChange} type="email"> </Input>
                               </Col>
                            </Row>
@@ -195,17 +191,17 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
                                  <Label check>
                                     <Input type="checkbox"
                                        name="isCheckedTrainer"
-                                       checked = {this.state.isCheckedTrainer}
-                                       onChange = {this.handleRoleCheckboxTrain}
+                                       checked={this.state.isCheckedTrainer}
+                                       onChange={this.handleRoleCheckboxTrain}
                                     /> Trainer
                                  </Label>
                               </FormGroup>
                               <FormGroup check>
                                  <Label check>
                                     <Input type="checkbox"
-                                    name="isCheckedStageMan"
-                                    checked = {this.state.isCheckedStageMan}
-                                    onChange = {this.handleRoleCheckboxStageMan}/> Staging Manager
+                                       name="isCheckedStageMan"
+                                       checked={this.state.isCheckedStageMan}
+                                       onChange={this.handleRoleCheckboxStageMan} /> Staging Manager
                                  </Label>
                               </FormGroup>
                            </Col>
@@ -213,7 +209,7 @@ export class ManageUsersTabComponenet extends React.Component <IComponentProps, 
                      </div>
                      <div className="modal-footer">
                         <Button onClick={this.handleSubmit} type="button" data-dismiss="modal" color="success">Submit</Button>
-                     {/* <Button type="button" color = "danger"data-dismiss="modal">Close</Button> */}
+                        {/* <Button type="button" color = "danger"data-dismiss="modal">Close</Button> */}
                      </div>
                   </div>
                </div>
