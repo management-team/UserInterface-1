@@ -24,12 +24,16 @@ export const getWeekTimeRange = () => {
 
 export const getTodayStart = () => {
   const todayObj = new Date();
-  todayObj.setUTCHours(0,0,0,0);
+  todayObj.setHours(0,0,0,0);
   return todayObj.getTime();
 }
 
 export const getTodayEnd = () => {
   const todayObj = new Date();
-  todayObj.setUTCHours(11,59,59,59);
+  todayObj.setHours(11,59,59,59);
   return todayObj.getTime();
+}
+
+export const getUTCTime = (time: number) => {
+  return time + new Date().getTimezoneOffset() * 60000;
 }
