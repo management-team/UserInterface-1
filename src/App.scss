@@ -1017,3 +1017,19 @@ Fa Circle
  .visualdata{
   left:55%;
 }
+
+.filterSelect{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.option-box:hover {
+  background-color: #8bdde7;
+  cursor: pointer;
+}
+
+.resetButton {
+  color: #000000;
+  background-color: $revature-orange-light;
+}
