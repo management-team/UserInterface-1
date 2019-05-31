@@ -8,6 +8,7 @@ import { IAuthState } from '../../../reducers/management';
 import { IState } from '../../../reducers';
 import { connect } from 'react-redux';
 import Loader from '../Loader/Loader';
+import DatePicker from 'react-date-picker';
 
 interface IComponentProps extends RouteComponentProps<{}> {
     auth: IAuthState;
@@ -17,7 +18,12 @@ interface IComponentState {
     surveys: ISurvey[],
     surveysLoaded: boolean,
     surveysToAssign: number[],
-    redirectTo: string | null
+    redirectTo: string | null,
+    title: string,
+    description: string,
+    createdDate: Date,
+    endDate: Date
+
 }
 
 class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
@@ -27,7 +33,11 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
             surveys: [],
             surveysLoaded: false,
             surveysToAssign: [],
-            redirectTo: null
+            redirectTo: null,
+            title: "",
+            description: "",
+            createdDate: new Date(),
+            endDate: new Date()
         }
     }
 
@@ -73,12 +83,63 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
     // Load the surveys into the state
     loadAllSurveys = async () => {
         const allSurveys = await surveyClient.findAllSurveys();
+        console.log(allSurveys)
         this.setState({
             surveys: allSurveys,
             surveysLoaded: true
         })
     }
 
+    // getting the surveys by title
+    setTitleChange = async (event) => {
+        console.log("Setting title");
+        console.log(event.target.value);
+        this.setState({
+            title: event.target.value
+        });
+    }
+    getSurveysByTitle = async (event) => {
+        event.preventDefault();
+        console.log("FINDING TITLE ON DB");
+        console.log(this.state.title);
+        const surveyByTitle = await surveyClient.findSurveyByTitle(this.state.title);
+        console.log("FOUND THIS");
+        console.log(surveyByTitle);
+        this.setState({
+            surveys: surveyByTitle,
+            surveysLoaded: true
+        })
+    }
+
+    setDescriptionChange = (event) => {
+
+        console.log(event.target.value);
+        this.setState({
+            description: event.target.value
+        });
+    }
+
+    getSurveysByDescription = async (event) => {
+        event.preventDefault();
+        const surveyByDescription = await surveyClient.findSurveyByDescription(this.state.description);
+        this.setState({
+            surveys: surveyByDescription,
+            surveysLoaded: true
+        });
+    }
+
+    getDateCreated = createdDate => {
+        this.setState({createdDate})
+
+    console.log(createdDate);
+
+    }
+    
+    getDateClosed = endDate => {
+        this.setState({endDate})
+        console.log(endDate);
+    }
+    
     render() {
         if (this.state.redirectTo) {
             return <Redirect push to={this.state.redirectTo} />
@@ -90,22 +151,76 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
                         {this.state.surveys.length ? (
                             <>
                                 <Table striped id="manage-users-table" className="tableUsers">
-                                    <thead className="rev-background-color">
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>Title</th>
-                                            <th>Description</th>
-                                            <th>Date Created</th>
-                                            <th>Closing Date</th>
-                                            <th>Published</th>
-                                            <th>Analytics</th>
-                                            <th>Respondents</th>
+                                    <thead className="rev-background-color" style={maxWidth}>
+                                        <tr style={maxWidth}>
+                                            <td><th>Select</th></td>
+                                            <td> 
+                                                
+                                                <div className="inputWrapper">
+
+                                                        <input type="text" id="inputTItle" name="title"
+                                                            className="inputBox form-control" placeholder=" "
+                                                            value={this.state.title} onChange={this.setTitleChange} />
+                                                        <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByTitle}>o</button>
+                                                </div> 
+                                                
+                                                
+                                                <th>Title</th> 
+
+                                            </td>
+                                                
+
+                                            <td>
+                                            
+
+
+                                                <div className="inputWrapper">
+
+                                                    <input type="text" id="inputDescription" name="description"
+                                                        className=" inputBox form-control" placeholder="Description"
+                                                        value={this.state.description} onChange={this.setDescriptionChange} />
+                                                    <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByDescription}>o</button>
+                                                </div>
+                                                
+                                                <th>Description</th>
+                                            </td>
+
+
+                                            
+                                              
+                                            
+
+
+                                            <td><th>Date Created</th>
+                                            <DatePicker 
+                                            onChange={this.getDateCreated}
+                                            value={this.state.createdDate}
+                                            /></td>
+
+                                            <td><th>Closing Date</th>
+                                            <DatePicker 
+                                            onChange={this.getDateClosed}
+                                            value={this.state.endDate}
+                                            /></td>
+
+                                            
+
+
+                                            { /* <th><input type="text" placeholder="DateCreated" value={toString(this.state.createdDate.toString} >Date Created</input></th>
+                                            <th><input type="text" placeholder="DateEnded" value={this.state.endDate}>Closing Date</input></th>*/}
+                                            <td><th>Published</th></td>
+                                            <td><th>Analytics</th></td>
+                                            <td><th>Respondents</th></td>
                                         </tr>
+
                                     </thead>
                                     <tbody>
                                         {this.state.surveys.map(survey => (
                                             <tr key={survey.surveyId} className="rev-table-row">
+
+                                               
                                                 <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
+
                                                 <td>{survey.title}</td>
                                                 <td>{survey.description}</td>
                                                 <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
@@ -130,7 +245,7 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
                             )}
                     </Fragment>
                 ) : (
-                        <Loader/>
+                        <Loader />
                     )}
             </>
         );
@@ -142,3 +257,7 @@ const mapStateToProps = (state: IState) => ({
 });
 
 export default connect(mapStateToProps)(AllSurveysComponent);
+
+const maxWidth = {
+    width: '100%'
+}
