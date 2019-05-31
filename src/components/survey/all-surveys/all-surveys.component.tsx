@@ -83,7 +83,6 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
     // Load the surveys into the state
     loadAllSurveys = async () => {
         const allSurveys = await surveyClient.findAllSurveys();
-        console.log(allSurveys)
         this.setState({
             surveys: allSurveys,
             surveysLoaded: true
@@ -92,16 +91,12 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
 
     // getting the surveys by title
     setTitleChange = async (event) => {
-        console.log("Setting title");
-        console.log(event.target.value);
         this.setState({
             title: event.target.value
         });
     }
     getSurveysByTitle = async (event) => {
         event.preventDefault();
-        console.log("FINDING TITLE ON DB");
-        console.log(this.state.title);
         if (this.state.title) {
             const surveyByTitle = await surveyClient.findSurveyByTitle(this.state.title);
             this.setState({
@@ -113,8 +108,6 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
     }
 
     setDescriptionChange = (event) => {
-
-        console.log(event.target.value);
         this.setState({
             description: event.target.value
         });
@@ -122,7 +115,6 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
 
     getSurveysByDescription = async (event) => {
         event.preventDefault();
-        console.log(this.state.description);
         if (this.state.description) {
             const surveyByDescription = await surveyClient.findSurveyByDescription(this.state.description);
             this.setState({

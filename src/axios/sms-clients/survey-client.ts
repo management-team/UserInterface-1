@@ -23,14 +23,10 @@ export const surveyClient = {
   findSurveyByTitle: async (title: string) => {
     //  let surveyFound;
     let surveys: any = [];
-    console.log(title);
-    console.log("looging at... ");
     console.log(`${surveyBaseRoute}/title/${title}`);
     await smsClient.get(`${surveyBaseRoute}/title/${title}`)
       // await smsClient.get(`localhost:8092/surveys/title/${title}`)
       .then(response => {
-        console.log("MY RESPONCE");
-        console.log(response);
         if (response.data) {
           surveys = response.data;
         }
@@ -55,8 +51,7 @@ export const surveyClient = {
       .catch(err => {
         console.log(err);
       });
-    console.log(surveys);
-
+   
     return surveys;
   },
   findAllSurveys: async () => {
