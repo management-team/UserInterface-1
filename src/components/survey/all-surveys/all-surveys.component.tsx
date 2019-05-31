@@ -102,13 +102,14 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
         event.preventDefault();
         console.log("FINDING TITLE ON DB");
         console.log(this.state.title);
-        const surveyByTitle = await surveyClient.findSurveyByTitle(this.state.title);
-        console.log("FOUND THIS");
-        console.log(surveyByTitle);
-        this.setState({
-            surveys: surveyByTitle,
-            surveysLoaded: true
-        })
+        if (this.state.title) {
+            const surveyByTitle = await surveyClient.findSurveyByTitle(this.state.title);
+            this.setState({
+                surveys: surveyByTitle,
+                surveysLoaded: true
+            });
+        }
+        else { this.loadAllSurveys(); }
     }
 
     setDescriptionChange = (event) => {
@@ -121,25 +122,31 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
 
     getSurveysByDescription = async (event) => {
         event.preventDefault();
-        const surveyByDescription = await surveyClient.findSurveyByDescription(this.state.description);
-        this.setState({
-            surveys: surveyByDescription,
-            surveysLoaded: true
-        });
+        console.log(this.state.description);
+        if (this.state.description) {
+            const surveyByDescription = await surveyClient.findSurveyByDescription(this.state.description);
+            this.setState({
+                surveys: surveyByDescription,
+                surveysLoaded: true
+            });
+        }
+        else {
+            this.loadAllSurveys();
+        }
     }
 
     getDateCreated = createdDate => {
-        this.setState({createdDate})
+        this.setState({ createdDate })
 
-    console.log(createdDate);
+        console.log(createdDate);
 
     }
-    
+
     getDateClosed = endDate => {
-        this.setState({endDate})
+        this.setState({ endDate })
         console.log(endDate);
     }
-    
+
     render() {
         if (this.state.redirectTo) {
             return <Redirect push to={this.state.redirectTo} />
@@ -148,101 +155,83 @@ class AllSurveysComponent extends Component<IComponentProps, IComponentState> {
             <>
                 {this.state.surveysLoaded ? (
                     <Fragment>
-                        {this.state.surveys.length ? (
-                            <>
-                                <Table striped id="manage-users-table" className="tableUsers">
-                                    <thead className="rev-background-color" style={maxWidth}>
-                                        <tr style={maxWidth}>
-                                            <td><th>Select</th></td>
-                                            <td> 
-                                                
-                                                <div className="inputWrapper">
+                        <Table striped id="manage-users-table" className="tableUsers">
+                            <thead className="rev-background-color" style={maxWidth}>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Date Created</th>
+                                    <th>Closing Date</th>
+                                    <th>Published</th>
+                                    <th>Analytics</th>
+                                    <th>Respondents</th>
+                                </tr>
+                                
+                                <tr style={secondHeadFilter}>
 
-                                                        <input type="text" id="inputTItle" name="title"
-                                                            className="inputBox form-control" placeholder=" "
-                                                            value={this.state.title} onChange={this.setTitleChange} />
-                                                        <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByTitle}>o</button>
-                                                </div> 
-                                                
-                                                
-                                                <th>Title</th> 
+                                    <td></td>
+                                    <td>
 
-                                            </td>
-                                                
+                                        <div className="inputWrapper">
 
-                                            <td>
-                                            
+                                            <input type="text" id="inputTItle" name="title"
+                                                className="inputBox form-control" placeholder="Title"
+                                                value={this.state.title} onChange={this.setTitleChange} />
+                                            <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByTitle}>o</button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="inputWrapper">
 
-
-                                                <div className="inputWrapper">
-
-                                                    <input type="text" id="inputDescription" name="description"
-                                                        className=" inputBox form-control" placeholder="Description"
-                                                        value={this.state.description} onChange={this.setDescriptionChange} />
-                                                    <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByDescription}>o</button>
-                                                </div>
-                                                
-                                                <th>Description</th>
-                                            </td>
-
-
-                                            
-                                              
-                                            
-
-
-                                            <td><th>Date Created</th>
-                                            <DatePicker 
+                                            <input type="text" id="inputDescription" name="description"
+                                                className=" inputBox form-control" placeholder="Description"
+                                                value={this.state.description} onChange={this.setDescriptionChange} />
+                                            <button type="submit" className="btn btn-success searchbtn" onClick={this.getSurveysByDescription}>o</button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <DatePicker
                                             onChange={this.getDateCreated}
                                             value={this.state.createdDate}
-                                            /></td>
+                                        /></td>
 
-                                            <td><th>Closing Date</th>
-                                            <DatePicker 
+                                    <td>
+                                        <DatePicker
                                             onChange={this.getDateClosed}
                                             value={this.state.endDate}
-                                            /></td>
+                                        /></td>
 
-                                            
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                            <tbody>
+                                {this.state.surveys.map(survey => (
+                                    <tr key={survey.surveyId} className="rev-table-row">
 
 
-                                            { /* <th><input type="text" placeholder="DateCreated" value={toString(this.state.createdDate.toString} >Date Created</input></th>
-                                            <th><input type="text" placeholder="DateEnded" value={this.state.endDate}>Closing Date</input></th>*/}
-                                            <td><th>Published</th></td>
-                                            <td><th>Analytics</th></td>
-                                            <td><th>Respondents</th></td>
-                                        </tr>
+                                        <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
 
-                                    </thead>
-                                    <tbody>
-                                        {this.state.surveys.map(survey => (
-                                            <tr key={survey.surveyId} className="rev-table-row">
-
-                                               
-                                                <td><input type="checkbox" onChange={e => this.checkFunc(e)} id={survey.surveyId.toString()} /></td>
-
-                                                <td>{survey.title}</td>
-                                                <td>{survey.description}</td>
-                                                <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
-                                                <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
-                                                <td>{survey.published ? 'Yes' : 'No'}</td>
-                                                <td><Button className='assignSurveyBtn' onClick={() =>
-                                                    this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
-                                                <td><Button className='assignSurveyBtn' onClick={() =>
-                                                    this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                                <div className="assignButtonDiv">
-                                    <SurveyModal
-                                        buttonLabel='Assign To Cohorts'
-                                        surveysToAssign={this.state.surveysToAssign} />
-                                </div>
-                            </>
-                        ) : (
-                                <div>No Surveys to Display</div>
-                            )}
+                                        <td>{survey.title}</td>
+                                        <td>{survey.description}</td>
+                                        <td>{survey.dateCreated && new Date(survey.dateCreated).toDateString()}</td>
+                                        <td>{survey.closingDate && new Date(survey.closingDate).toDateString()}</td>
+                                        <td>{survey.published ? 'Yes' : 'No'}</td>
+                                        <td><Button className='assignSurveyBtn' onClick={() =>
+                                            this.handleLoadSurveyData(survey.surveyId)}>Data</Button></td>
+                                        <td><Button className='assignSurveyBtn' onClick={() =>
+                                            this.loadSurveyRespondents(survey.surveyId)}>Status</Button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                        <div className="assignButtonDiv">
+                            <SurveyModal
+                                buttonLabel='Assign To Cohorts'
+                                surveysToAssign={this.state.surveysToAssign} />
+                        </div>
                     </Fragment>
                 ) : (
                         <Loader />
@@ -260,4 +249,9 @@ export default connect(mapStateToProps)(AllSurveysComponent);
 
 const maxWidth = {
     width: '100%'
+}
+
+const secondHeadFilter = {
+    width: '100%',
+    background: 'white'
 }

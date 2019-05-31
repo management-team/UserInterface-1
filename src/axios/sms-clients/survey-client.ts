@@ -21,27 +21,27 @@ export const surveyClient = {
   //-- Survey Methods --//
   //--------------------//
   findSurveyByTitle: async (title: string) => {
-   //  let surveyFound;
+    //  let surveyFound;
     let surveys: any = [];
     console.log(title);
     console.log("looging at... ");
     console.log(`${surveyBaseRoute}/title/${title}`);
     await smsClient.get(`${surveyBaseRoute}/title/${title}`)
-    // await smsClient.get(`localhost:8092/surveys/title/${title}`)
-    .then(response => {
-      console.log("MY RESPONCE");
-      console.log(response);
-      if(response.data) {
-        surveys = response.data;
-      }
-      else {
-        console.log("Record not found.");
-      }
-    }) 
-    .catch(err => {
-      console.log(err);
-    });
-    
+      // await smsClient.get(`localhost:8092/surveys/title/${title}`)
+      .then(response => {
+        console.log("MY RESPONCE");
+        console.log(response);
+        if (response.data) {
+          surveys = response.data;
+        }
+        else {
+          console.log("Record not found.");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
     return surveys;
   },
 
@@ -49,12 +49,14 @@ export const surveyClient = {
     let surveys: any = [];
 
     await smsClient.get(`${surveyBaseRoute}/description/${description}`)
-    .then(response => {
-      surveys = response.data;
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      .then(response => {
+        surveys = response.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(surveys);
+
     return surveys;
   },
   findAllSurveys: async () => {
@@ -69,9 +71,7 @@ export const surveyClient = {
       });
     if (surveysAndTemplates) {
       surveysAndTemplates.forEach(element => {
-        if (!element.template) {
-          surveys.push(element);
-        }
+        surveys.push(element);
       });
     }
     return surveys;
