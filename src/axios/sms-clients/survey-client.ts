@@ -54,6 +54,30 @@ export const surveyClient = {
    
     return surveys;
   },
+  findSurveysByCreatedDate: async (date: Date) => {
+    let surveys: any = [];
+    await smsClient.get(`${surveyBaseRoute}/endedDate/${date}`)
+    .then(response => {
+      surveys = response.data;
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+    return surveys;
+  },
+  findSurveysByEndDate: async (date: Date) => {
+    let surveys: any = [];
+    await smsClient.get(`${surveyBaseRoute}/createdDate/${date}`)
+    .then(response => {
+      surveys = response.data;
+    })
+      .catch(err => {
+        console.log(err);
+      })
+
+      return surveys;
+  },
   findAllSurveys: async () => {
     let surveysAndTemplates;
     let surveys: any = [];
